@@ -5,7 +5,7 @@ import Router from "./Components/Router";
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <Header/>
       <h1>Pokedex 17</h1>
       <Router/>
