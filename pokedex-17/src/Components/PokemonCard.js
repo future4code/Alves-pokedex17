@@ -1,50 +1,83 @@
-import React from "react";
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import { Link } from "@mui/material";
-import Typography from '@mui/material/Typography';
-import useRequestData from '../hooks/useRequestData'
-import BASE_URL from "../constants/BASE_URL"
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-
-
-
+import { Grid } from "@mui/material";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 const PokemonCard = (props) => {
+	const [listPokemons, setListPokemons] = useState([]);
+	const [detailsPokemons, setDetailsPokemons] = useState([]);
 
-  const pokemonName = props.pokemonName
-  const pokemonData = useRequestData(`${BASE_URL}${pokemonName}`)[0];
-  let pokemonPhoto  = pokemonData.sprites.other.home.front_default
+	useEffect(() => {
+		axios
+			.get("https://pokeapi.co/api/v2/pokemon?limit=20&offset=0")
+			.then((response) => {
+				setListPokemons(response.data.results);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	}, []);
 
- 
+	useEffect(() => {
+		const data = [];
 
-  return (
-    <Card sx={{ maxWidth: 345 }}>
-      <CardMedia
-        component="img"
-        alt={`${pokemonName}`}
-        height="140"
-        image={pokemonPhoto}
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-        {props.pokemon.name}
-        </Typography>
-       
-      </CardContent>
-      <CardActions>
-        <Link to={`/detalhes/${pokemonName}`}>
-          <Button size="small" >Detalhes</Button>
-        </Link>
-        <Button size="small" >Captura</Button>
-        {/* disable = {OnPokedex()} */}
-        {/* onClick = add */}
-      </CardActions>
-    </Card>
-  )
-}
+		listPokemons.forEach((pokemon) => {
+			axios
+				.get(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
+				.then((response) => {
+					data.push(response.data);
+					if (data.length === 20) {
+						setDetailsPokemons(data);
+						console.log(data);
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		});
+	}, [listPokemons]);
 
-export default PokemonCard
+	return (
+		<Grid
+			container
+			spacing={{ xs: 2, md: 3 }}
+			columns={{ xs: 4, sm: 2, md: 12 }}
+		>
+			{detailsPokemons?.map((pokemon) => (
+				<Grid item xs={2} sm={4} md={2} key={pokemon.id}>
+					<Card sx={{ maxWidth: 300 }} variant="outlined">
+						<CardMedia
+							component="img"
+							sx={{ width: 250, height: 200 }}
+							image={pokemon.sprites.other.dream_world.front_default}
+							alt="green iguana"
+							loading="lazy"
+						/>
+						<CardContent>
+							<Typography
+								gutterBottom
+								variant="h5"
+								component="div"
+								textTransform="capitalize"
+							>
+								{pokemon.name} - #0{pokemon.id}
+							</Typography>
+						</CardContent>
+						<CardActions>
+							<Button size="small">Detalhes</Button>
+							<Button size="small">Capturar</Button>
+						</CardActions>
+					</Card>
+				</Grid>
+			))}
+		</Grid>
+	);
+};
+
+export default PokemonCard;
