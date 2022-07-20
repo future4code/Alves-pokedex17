@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
+import { Link } from "@mui/material";
 import Typography from '@mui/material/Typography';
+import useRequestData from '../hooks/useRequestData'
+import BASE_URL from "../constants/BASE_URL"
 
 
 
@@ -14,38 +15,19 @@ import Typography from '@mui/material/Typography';
 
 const PokemonCard = (props) => {
 
-  const [listPokemon, setListPokemon] = useState([]);
-	const [listDetailsPokemon, setListDetailsPokemon] = useState({});
-  const navigate = useNavigate()
+  const pokemonName = props.pokemonName
+  const pokemonData = useRequestData(`${BASE_URL}${pokemonName}`)[0];
+  let pokemonPhoto  = pokemonData.sprites.other.home.front_default
 
-  
-
-	useEffect(() => {
-		listPokemon.forEach((pokemon) => {
-			axios
-				.get(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
-				.then((response) => {
-					setListDetailsPokemon(response.data);
-				})
-				.catch((error) => {
-					console.log(error);
-				});
-		});
-	}, [listPokemon]);
-
-  const setPokedex =() => {
-
-    // essa função deve colocar o selecionado na pokedex//
-  }
-
+ 
 
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardMedia
         component="img"
-        alt={`${props.pokemon.name}`}
+        alt={`${pokemonName}`}
         height="140"
-        image={listDetailsPokemon.sprites?.front_default}
+        image={pokemonPhoto}
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
@@ -54,8 +36,12 @@ const PokemonCard = (props) => {
        
       </CardContent>
       <CardActions>
-        <Button size="small" onClick={() => goToDetails (navigate, listDetailsPokemon.name)} >Detalhes</Button>
-        <Button size="small"onClick={() => setPokedex()} >Captura</Button>
+        <Link to={`/detalhes/${pokemonName}`}>
+          <Button size="small" >Detalhes</Button>
+        </Link>
+        <Button size="small" >Captura</Button>
+        {/* disable = {OnPokedex()} */}
+        {/* onClick = add */}
       </CardActions>
     </Card>
   )
