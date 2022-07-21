@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import { Link } from "@mui/material";
 import Typography from '@mui/material/Typography';
 import useRequestData from '../hooks/useRequestData'
-import BASE_URL from "../constants/BASE_URL"
+import {BASE_URL} from "../constants/BASE_URL"
 
 
 
