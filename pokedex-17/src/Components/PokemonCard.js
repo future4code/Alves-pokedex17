@@ -1,6 +1,6 @@
-
-
-import { Grid } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Grid,Link } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -49,13 +49,13 @@ const PokemonCard = (props) => {
 			columns={{ xs: 4, sm: 2, md: 12 }}
 		>
 			{detailsPokemons?.map((pokemon) => (
-				<Grid item xs={2} sm={4} md={2} key={pokemon.id}>
-					<Card sx={{ maxWidth: 300 }} variant="outlined">
+				<Grid item xs={2} sm={4} md={4} key={pokemon.id}>
+					<Card sx={{ maxWidth: 300, margin: "0 auto", padding: "0.1em" }} variant="outlined">
 						<CardMedia
 							component="img"
-							sx={{ width: 250, height: 200 }}
+							sx={{ mapadding: "1em 1em 0 1em", width: 250, height: 200, objectFit: "contain" }}
 							image={pokemon.sprites.other.dream_world.front_default}
-							alt="green iguana"
+							alt="pokemon"
 							loading="lazy"
 						/>
 						<CardContent>
@@ -65,11 +65,13 @@ const PokemonCard = (props) => {
 								component="div"
 								textTransform="capitalize"
 							>
-								{pokemon.name} - #0{pokemon.id}
+								{pokemon.name} - {pokemon.id}
 							</Typography>
 						</CardContent>
 						<CardActions>
+							<Link to={`/detalhes/${pokemon.name}`}>
 							<Button size="small">Detalhes</Button>
+							</Link>
 							<Button size="small">Capturar</Button>
 						</CardActions>
 					</Card>
