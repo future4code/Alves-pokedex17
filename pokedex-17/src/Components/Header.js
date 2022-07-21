@@ -1,5 +1,5 @@
 import React from 'react'
-import { AppBar, Button, Grid } from '@mui/material'
+import { AppBar, Button, Grid, Link } from '@mui/material'
 import { Toolbar } from '@mui/material'
 import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
@@ -28,8 +28,12 @@ function Header() {
                          <Grid item xs={1}/>
                          <Grid item xs={3}>
                             <Box display="flex">
-                               
-                                <Button sx={{marginLeft: 'auto' }}variant="contained">Pokedex</Button>
+                                <Link to={`/pokedex`}>
+                                    <Button
+                                     sx={{marginLeft: 'auto' }}
+                                     variant="contained">Pokedex
+                                    </Button>
+                                </Link>
                             </Box>
                          </Grid>
                                        

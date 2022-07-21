@@ -8,9 +8,13 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
+const pokemonName = []
+
 const PokemonCard = (props) => {
 	const [listPokemons, setListPokemons] = useState([]);
 	const [detailsPokemons, setDetailsPokemons] = useState([]);
+	const [page, setPage] = useState(localStorage.getItem('page') || "home");
+	const [pokedex, setPokedex] = useState(JSON.parse(localStorage.getItem('pokedex')) || []);
 
 	useEffect(() => {
 		axios
@@ -42,10 +46,35 @@ const PokemonCard = (props) => {
 		});
 	}, [listPokemons]);
 
+	const ifOnPokedex = () => {
+		
+		if (page === 'home'){
+		  return pokedex.includes(pokemonName)
+		} else{
+		  return false
+		}
+	  }
+
+	  const adDelete = () => {
+		
+		const newPokedex = [...pokedex]
+		if (page === 'home'){
+		  newPokedex.push(pokemonName)
+		} else if(page === 'pokedex'){
+		  const index = pokedex.findIndex((item) => {
+			return item === pokemonName;
+		  });
+		  newPokedex.splice(index, 1)
+		}
+		setPokedex(newPokedex)
+		localStorage.setItem('pokedex', JSON.stringify(newPokedex))
+	  }
+
+
 	return (
 		<Grid
 			container
-			spacing={{ xs: 2, md: 3 }}
+			spacing={{ xs: 4, md: 3 }}
 			columns={{ xs: 4, sm: 2, md: 12 }}
 		>
 			{detailsPokemons?.map((pokemon) => (
@@ -53,7 +82,7 @@ const PokemonCard = (props) => {
 					<Card sx={{ maxWidth: 300, margin: "0 auto", padding: "0.1em" }} variant="outlined">
 						<CardMedia
 							component="img"
-							sx={{ mapadding: "1em 1em 0 1em", width: 250, height: 200, objectFit: "contain" }}
+							sx={{ mapadding: "1em 1em 0 1em", width: 300, height: 200, objectFit: "contain" }}
 							image={pokemon.sprites.other.dream_world.front_default}
 							alt="pokemon"
 							loading="lazy"
@@ -72,7 +101,13 @@ const PokemonCard = (props) => {
 							<Link to={`/detalhes/${pokemon.name}`}>
 							<Button size="small">Detalhes</Button>
 							</Link>
-							<Button size="small">Capturar</Button>
+							<Button 
+							size="small"
+							disabled={ifOnPokedex()}
+							onClick={adDelete}
+
+							>Capturar
+							</Button>
 						</CardActions>
 					</Card>
 				</Grid>
